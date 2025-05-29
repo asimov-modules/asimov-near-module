@@ -1,0 +1,48 @@
+# See: https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[package]
+name = "asimov-near-module"
+version = "0.0.0"
+authors = ["ASIMOV Protocol <support@asimov.so>"]
+edition = "2024"
+#rust-version = "1.85"
+description = "ASIMOV module for data import from the NEAR Protocol blockchain network."
+#documentation = "https://docs.rs/asimov-near-module"
+readme = true
+homepage = "https://github.com/asimov-modules"
+repository = "https://github.com/asimov-modules/asimov-near-module"
+license = "Unlicense"
+keywords = ["asimov-module", "asimov", "ai"]
+categories = ["command-line-utilities", "text-processing"]          # TODO
+publish = true
+
+[features]
+default = ["all", "cli", "std"]
+all = ["tracing"]
+cli = ["std"]
+std = [
+    "asimov-module/std",
+    "tracing?/std",
+    "tracing-subscriber?/fmt",
+    "tracing-subscriber?/std",
+]
+tracing = ["dep:tracing", "dep:tracing-subscriber"]
+unstable = []
+
+[dependencies]
+asimov-module = { version = "25.0.0-dev.8", default-features = false }
+tracing = { version = "0.1", default-features = false, optional = true }
+tracing-subscriber = { version = "0.3", default-features = false, features = [
+    "alloc",
+    "tracing-log",
+], optional = true }
+
+[profile.release]
+opt-level = "z"
+strip = true
+lto = "thin"
+
+[[bin]]
+name = "asimov-near-fetcher"
+path = "src/fetcher/main.rs"
+required-features = ["cli"]
