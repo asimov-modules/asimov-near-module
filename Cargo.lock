@@ -47,7 +47,7 @@ dependencies = [
 
 [[package]]
 name = "asimov-near-module"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "asimov-module",
  "clientele",
