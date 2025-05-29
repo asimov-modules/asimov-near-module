@@ -13,29 +13,52 @@ homepage = "https://github.com/asimov-modules"
 repository = "https://github.com/asimov-modules/asimov-near-module"
 license = "Unlicense"
 keywords = ["asimov-module", "asimov", "ai"]
-categories = ["command-line-utilities", "text-processing"]          # TODO
+categories = [
+    "command-line-utilities",
+    "api-bindings",
+    "web-programming::http-client",
+    "text-processing",
+]
 publish = true
 
 [features]
 default = ["all", "cli", "std"]
 all = ["tracing"]
-cli = ["std"]
+cli = ["pretty", "std", "dep:clientele"]
+pretty = ["dep:colored_json"]
 std = [
     "asimov-module/std",
-    "tracing?/std",
+    "clientele/std",
+    "jq/std",
+    "serde/std",
     "tracing-subscriber?/fmt",
     "tracing-subscriber?/std",
+    "url/std",
 ]
-tracing = ["dep:tracing", "dep:tracing-subscriber"]
+tracing = ["dep:tracing-subscriber"]
 unstable = []
 
 [dependencies]
 asimov-module = { version = "25.0.0-dev.8", default-features = false }
-tracing = { version = "0.1", default-features = false, optional = true }
+clientele = { version = "0.3", default-features = false, features = [
+    "argfile",
+    "dotenv",
+    "wild",
+], optional = true }
+colored_json = { version = "5", default-features = false, optional = true }
+jq = { version = "0.1", default-features = false, features = ["all"] }
+serde = { version = "1", default-features = false, features = ["derive"] }
+serde_json = { version = "1", default-features = false, features = ["alloc"] }
 tracing-subscriber = { version = "0.3", default-features = false, features = [
     "alloc",
     "tracing-log",
 ], optional = true }
+ureq = { version = "3.0", default-features = false, features = [
+    "platform-verifier",
+    "rustls",
+    "json",
+] }
+url = { version = "2.5", default-features = false }
 
 [profile.release]
 opt-level = "z"
