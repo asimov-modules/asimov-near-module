@@ -1,8 +1,10 @@
 # ASIMOV NEAR Module
 
 [![License](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](https://unlicense.org)
-[![Compatibility](https://img.shields.io/badge/rust-1.85%2B-blue)](https://blog.rust-lang.org/2025/02/20/Rust-1.85.0/)
-[![Package](https://img.shields.io/crates/v/asimov-near-module)](https://crates.io/crates/asimov-near-module)
+[![Package on Crates.io](https://img.shields.io/crates/v/asimov-near-module.svg)](https://crates.io/crates/asimov-near-module)
+[![Package on PyPI](https://img.shields.io/pypi/v/asimov-near-module.svg)](https://pypi.org/project/asimov-near-module)
+[![Package on RubyGems](https://img.shields.io/gem/v/asimov-near-module.svg)](https://rubygems.org/gems/asimov-near-module)
+[![Package on NPM](https://img.shields.io/npm/v/asimov-near-module.svg)](https://npmjs.com/package/asimov-near-module)
 
 [ASIMOV] module for data import from the [NEAR Protocol] blockchain network.
 
@@ -13,12 +15,31 @@
 - Collects the raw JSON data via the edge-cached [neardata.xyz] API.
 - Constructs a semantic knowledge graph based on the [KNOW] ontology.
 - Supports plain JSON output as well as [RDF] output in the form of [JSON-LD].
+- Distributed as a standalone static binary with zero runtime dependencies.
 
 ## 🛠️ Prerequisites
 
-- [Rust](https://rust-lang.org) 1.85+ (2024 edition)
+- [Rust] 1.85+ (2024 edition) if building from source code
 
 ## ⬇️ Installation
+
+### Installation from PyPI
+
+```bash
+pip install -U asimov-near-module
+```
+
+### Installation from RubyGems
+
+```bash
+gem install asimov-near-module
+```
+
+### Installation from NPM
+
+```bash
+npm install -g asimov-near-module
+```
 
 ### Installation from Source Code
 
@@ -65,7 +86,11 @@ git clone https://github.com/asimov-modules/asimov-near-module.git
 [JSON-LD]: https://json-ld.org
 [KNOW]: https://github.com/know-ontology
 [NEAR Protocol]: https://near.org
+[NPM]: https:/npmjs.org
+[Python]: https://python.org
 [RDF]: https://www.w3.org/TR/rdf12-concepts/
+[Ruby]: https://ruby-lang.org
+[Rust]: https://rust-lang.org
 [mainnet]: https://docs.near.org/protocol/network/networks#mainnet
 [neardata.xyz]: https://neardata.xyz
 [testnet]: https://docs.near.org/protocol/network/networks#testnet
