@@ -1,0 +1,14 @@
+# See: https://github.com/asimov-modules/asimov-template-module/blob/master/.asimov/module.yaml
+---
+name: near
+label: NEAR Protocol
+summary: Data import from the NEAR Protocol blockchain network.
+links:
+  - https://github.com/asimov-modules/asimov-near-module
+  - https://crates.io/crates/asimov-near-module
+  - https://pypi.org/project/asimov-near-module
+  - https://rubygems.org/gems/asimov-near-module
+  - https://npmjs.com/package/asimov-near-module
+
+flows:
+  - asimov-near-fetcher
