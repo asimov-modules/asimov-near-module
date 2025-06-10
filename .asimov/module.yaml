@@ -10,5 +10,10 @@ links:
   - https://rubygems.org/gems/asimov-near-module
   - https://npmjs.com/package/asimov-near-module
 
-flows:
-  - asimov-near-fetcher
+provides:
+  flows:
+    - asimov-near-fetcher
+
+handles:
+  url_protocols:
+    - near
