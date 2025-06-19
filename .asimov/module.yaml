@@ -1,4 +1,4 @@
-# See: https://github.com/asimov-modules/asimov-template-module/blob/master/.asimov/module.yaml
+# See: https://asimov-specs.github.io/module-manifest/
 ---
 name: near
 label: NEAR Protocol
@@ -11,7 +11,7 @@ links:
   - https://npmjs.com/package/asimov-near-module
 
 provides:
-  flows:
+  programs:
     - asimov-near-fetcher
 
 handles:
