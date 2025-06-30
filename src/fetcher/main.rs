@@ -37,8 +37,18 @@ fn main() -> Result<clientele::SysexitsError, Box<dyn std::error::Error>> {
         // Serialize the response data:
         if cfg!(feature = "pretty") {
             let block_json: serde_json::Value = serde_json::from_str(&block_json)?;
-            colored_json::write_colored_json(&block_json, &mut stdout())?;
-            println!();
+            match colored_json::write_colored_json(&block_json, &mut stdout()) {
+                Ok(_) => println!(),
+                Err(err)
+                    if err
+                        .io_error_kind()
+                        .is_some_and(|kind| kind == std::io::ErrorKind::BrokenPipe) =>
+                {
+                    // break as we can't write to stdout
+                    break;
+                }
+                Err(err) => return Err(err.into()),
+            };
         } else {
             println!("{}", block_json);
         }
