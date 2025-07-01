@@ -29,28 +29,18 @@ fn main() -> Result<clientele::SysexitsError, Box<dyn std::error::Error>> {
         return Ok(EX_OK);
     }
 
+    let mut stdout = stdout().lock();
+
     // Process each of the given URL arguments:
     for url in urls {
         let block: BlockUrl = url.parse()?;
         let block_json = block.fetch()?;
 
-        // Serialize the response data:
-        if cfg!(feature = "pretty") {
-            let block_json: serde_json::Value = serde_json::from_str(&block_json)?;
-            match colored_json::write_colored_json(&block_json, &mut stdout()) {
-                Ok(_) => println!(),
-                Err(err)
-                    if err
-                        .io_error_kind()
-                        .is_some_and(|kind| kind == std::io::ErrorKind::BrokenPipe) =>
-                {
-                    // break as we can't write to stdout
-                    break;
-                }
-                Err(err) => return Err(err.into()),
-            };
-        } else {
-            println!("{}", block_json);
+        match print_block(&mut stdout, &block_json) {
+            Ok(_) => (),
+            // break as we can't write to stdout:
+            Err(err) if err.kind() == std::io::ErrorKind::BrokenPipe => break,
+            Err(err) => return Err(err.into()),
         }
     }
 
@@ -60,4 +50,17 @@ fn main() -> Result<clientele::SysexitsError, Box<dyn std::error::Error>> {
 #[cfg(not(feature = "std"))]
 fn main() {
     unimplemented!("asimov-near-fetcher requires the 'std' feature")
+}
+
+fn print_block(w: &mut impl std::io::Write, block: &str) -> std::io::Result<()> {
+    // Serialize the response data:
+    if cfg!(feature = "pretty") {
+        let block_json: serde_json::Value = serde_json::from_str(&block)?;
+        colored_json::write_colored_json(&block_json, w)?;
+        writeln!(w)?;
+    } else {
+        writeln!(w, "{}", block)?;
+    }
+
+    Ok(())
 }
