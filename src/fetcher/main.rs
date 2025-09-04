@@ -1,5 +1,22 @@
 // This is free and unencumbered software released into the public domain.
 
+use clap::Parser;
+use clientele::StandardOptions;
+
+/// asimov-near-fetcher
+#[derive(Debug, Parser)]
+#[command(arg_required_else_help = true)]
+struct Options {
+    #[clap(flatten)]
+    flags: StandardOptions,
+
+    /// The output format.
+    #[arg(value_name = "FORMAT", short = 'o', long)]
+    output: Option<String>,
+
+    urls: Vec<String>,
+}
+
 #[cfg(feature = "std")]
 fn main() -> Result<clientele::SysexitsError, Box<dyn std::error::Error>> {
     use asimov_near_module::BlockUrl;
@@ -10,29 +27,35 @@ fn main() -> Result<clientele::SysexitsError, Box<dyn std::error::Error>> {
     clientele::dotenv().ok();
 
     // Expand wildcards and @argfiles:
-    let args = clientele::args_os()?;
+    let args = asimov_module::args_os()?;
+
+    // Parse command-line options:
+    let options = Options::parse_from(args);
+
+    // Handle the `--version` flag:
+    if options.flags.version {
+        println!("{} {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
+        return Ok(EX_OK);
+    }
+
+    // Handle the `--license` flag:
+    if options.flags.license {
+        print!("{}", include_str!("../../UNLICENSE"));
+        return Ok(EX_OK);
+    }
 
     // Configure logging & tracing:
     #[cfg(feature = "tracing")]
-    tracing_subscriber::fmt()
-        .with_writer(std::io::stderr)
-        .with_max_level(tracing_subscriber::filter::LevelFilter::WARN)
-        .init();
+    asimov_module::init_tracing_subscriber(&options.flags).expect("failed to initialize logging");
 
-    // Parse URLs from command-line arguments:
-    let urls: Vec<String> = args
-        .iter()
-        .skip(1)
-        .map(|arg| arg.to_string_lossy().into())
-        .collect();
-    if urls.is_empty() {
+    if options.urls.is_empty() {
         return Ok(EX_OK);
     }
 
     let mut stdout = stdout().lock();
 
     // Process each of the given URL arguments:
-    for url in urls {
+    for url in options.urls {
         let block: BlockUrl = url.parse()?;
         let block_json = block.fetch()?;
 
@@ -55,7 +78,7 @@ fn main() {
 fn print_block(w: &mut impl std::io::Write, block: &str) -> std::io::Result<()> {
     // Serialize the response data:
     if cfg!(feature = "pretty") {
-        let block_json: serde_json::Value = serde_json::from_str(&block)?;
+        let block_json: serde_json::Value = serde_json::from_str(block)?;
         colored_json::write_colored_json(&block_json, w)?;
         writeln!(w)?;
     } else {
