@@ -2,6 +2,7 @@
 
 use clap::Parser;
 use clientele::StandardOptions;
+use std::io::Write as _;
 
 /// asimov-near-fetcher
 #[derive(Debug, Parser)]
@@ -59,7 +60,7 @@ fn main() -> Result<clientele::SysexitsError, Box<dyn std::error::Error>> {
         let block: BlockUrl = url.parse()?;
         let block_json = block.fetch()?;
 
-        match print_block(&mut stdout, &block_json) {
+        match writeln!(&mut stdout, "{}", &block_json) {
             Ok(_) => (),
             // break as we can't write to stdout:
             Err(err) if err.kind() == std::io::ErrorKind::BrokenPipe => break,
@@ -73,17 +74,4 @@ fn main() -> Result<clientele::SysexitsError, Box<dyn std::error::Error>> {
 #[cfg(not(feature = "std"))]
 fn main() {
     unimplemented!("asimov-near-fetcher requires the 'std' feature")
-}
-
-fn print_block(w: &mut impl std::io::Write, block: &str) -> std::io::Result<()> {
-    // Serialize the response data:
-    if cfg!(feature = "pretty") {
-        let block_json: serde_json::Value = serde_json::from_str(block)?;
-        colored_json::write_colored_json(&block_json, w)?;
-        writeln!(w)?;
-    } else {
-        writeln!(w, "{}", block)?;
-    }
-
-    Ok(())
 }
