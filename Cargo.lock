@@ -73,7 +73,7 @@ dependencies = [
 
 [[package]]
 name = "asimov-near-module"
-version = "0.0.3"
+version = "0.0.4"
 dependencies = [
  "asimov-module",
  "clap",
